@@ -1,0 +1,277 @@
+.order-management {
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.om-header {
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 2px solid #eee;
+}
+
+.om-header h2 {
+  margin: 0;
+  color: #080C25;
+  font-size: 1.5rem;
+}
+
+.order-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
+}
+
+.stat-label {
+  font-size: 0.85rem;
+  opacity: 0.9;
+  margin-bottom: 0.5rem;
+}
+
+.stat-value {
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
+.om-controls {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.filter-group,
+.search-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+  min-width: 200px;
+}
+
+.filter-group label {
+  font-weight: 600;
+  color: #333;
+}
+
+.filter-group select,
+.search-group input {
+  padding: 0.7rem;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 0.95rem;
+  transition: border-color 0.3s ease;
+}
+
+.filter-group select,
+.search-group input {
+  flex: 1;
+}
+
+.filter-group select:focus,
+.search-group input:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.orders-table {
+  overflow-x: auto;
+  margin-bottom: 1.5rem;
+}
+
+.orders-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.orders-table thead {
+  background: #f5f7fa;
+}
+
+.orders-table th {
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: #333;
+  border-bottom: 2px solid #eee;
+  font-size: 0.9rem;
+}
+
+.orders-table td {
+  padding: 1rem;
+  border-bottom: 1px solid #eee;
+  color: #666;
+}
+
+.orders-table tbody tr:hover {
+  background: #f9f9f9;
+}
+
+.order-id {
+  font-weight: 600;
+  color: #667eea;
+  font-family: monospace;
+  font-size: 0.85rem;
+}
+
+.customer-name {
+  font-weight: 600;
+  color: #333;
+}
+
+.customer-email {
+  font-size: 0.85rem;
+  color: #999;
+}
+
+.products-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.product-item {
+  display: flex;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+}
+
+.product-name {
+  flex: 1;
+  color: #333;
+}
+
+.product-qty {
+  color: #999;
+  font-size: 0.8rem;
+}
+
+.amount {
+  font-weight: 600;
+  color: #667eea;
+}
+
+.status-select {
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: all 0.3s ease;
+}
+
+.status-select.status-pending {
+  background: #fff3cd;
+  color: #856404;
+  border-color: #ffeae0;
+}
+
+.status-select.status-completed {
+  background: #d4edda;
+  color: #155724;
+  border-color: #c3e6cb;
+}
+
+.status-select:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.action-cell {
+  text-align: center;
+}
+
+.btn-delete {
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.btn-delete:hover {
+  background: #ffe7e7;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 3rem;
+  color: #999;
+}
+
+.empty-state p {
+  font-size: 1.2rem;
+  margin: 0;
+}
+
+.om-info {
+  padding: 1.5rem;
+  background: #f9f9f9;
+  border-radius: 8px;
+}
+
+.om-info p {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #666;
+}
+
+.om-info strong {
+  color: #667eea;
+}
+
+@media (max-width: 768px) {
+  .order-management {
+    padding: 1rem;
+  }
+
+  .order-stats {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  .stat-card {
+    padding: 1rem;
+  }
+
+  .stat-value {
+    font-size: 1.3rem;
+  }
+
+  .om-controls {
+    flex-direction: column;
+  }
+
+  .filter-group,
+  .search-group {
+    min-width: unset;
+  }
+
+  .orders-table {
+    font-size: 0.8rem;
+  }
+
+  .orders-table th,
+  .orders-table td {
+    padding: 0.6rem;
+  }
+
+  .product-item {
+    font-size: 0.75rem;
+  }
+}
