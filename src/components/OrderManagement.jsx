@@ -8,6 +8,22 @@ export default function OrderManagement() {
   const [filterStatus, setFilterStatus] = useState('all')
   const [searchTerm, setSearchTerm] = useState('')
 
+  // Format tanggal lengkap dengan jam, menit, detik
+  const formatDetailedDateTime = (dateString) => {
+    if (!dateString) return '-'
+    const date = new Date(dateString)
+    const options = {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false
+    }
+    return date.toLocaleString('id-ID', options)
+  }
+
   useEffect(() => {
     setOrdersWithDetails(getOrdersWithDetails())
   }, [orders])
@@ -113,7 +129,7 @@ export default function OrderManagement() {
               {filteredOrders.map(order => (
                 <tr key={order.id}>
                   <td className="order-id">{order.id}</td>
-                  <td>{order.date}</td>
+                  <td className="date-cell" title={order.createdAt}>{formatDetailedDateTime(order.createdAt)}</td>
                   <td className="customer-name">{order.customerName}</td>
                   <td className="customer-email">{order.customerEmail}</td>
                   <td>

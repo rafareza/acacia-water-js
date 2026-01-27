@@ -7,6 +7,7 @@ export default function Cart() {
   const { cart, removeFromCart, updateQuantity, getTotalPrice, clearCart } = useCart()
   const [isOpen, setIsOpen] = useState(false)
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false)
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false)
 
   const totalPrice = getTotalPrice()
   const cartCount = cart.length
@@ -89,7 +90,7 @@ export default function Cart() {
               </div>
               <button 
                 className="checkout-btn"
-                onClick={() => setIsCheckoutOpen(true)}
+                onClick={() => setIsConfirmOpen(true)}
               >
                 Lanjut ke Pembayaran
               </button>
@@ -106,6 +107,56 @@ export default function Cart() {
 
       {isCheckoutOpen && (
         <Checkout onClose={() => setIsCheckoutOpen(false)} />
+      )}
+
+      {isConfirmOpen && (
+        <div className="confirm-overlay" onClick={() => setIsConfirmOpen(false)}>
+          <div className="confirm-modal" onClick={(e) => e.stopPropagation()}>
+            <h2>Konfirmasi Pembelian</h2>
+            
+            <div className="confirm-items">
+              {cart.map(item => (
+                <div key={item.id} className="confirm-item">
+                  <div className="confirm-item-left">
+                    <span className="confirm-item-emoji">{item.image}</span>
+                    <div className="confirm-item-info">
+                      <p className="confirm-item-name">{item.name}</p>
+                      <p className="confirm-item-qty">Kuantitas: {item.quantity}</p>
+                    </div>
+                  </div>
+                  <div className="confirm-item-right">
+                    <p className="confirm-item-price">Rp {(item.price * item.quantity).toLocaleString('id-ID')}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="confirm-total">
+              <span>Total Harga:</span>
+              <span className="confirm-total-amount">Rp {getTotalPrice().toLocaleString('id-ID')}</span>
+            </div>
+
+            <p className="confirm-question">Apakah Anda yakin ingin membeli item ini?</p>
+
+            <div className="confirm-actions">
+              <button 
+                className="confirm-btn-yes"
+                onClick={() => {
+                  setIsConfirmOpen(false)
+                  setIsCheckoutOpen(true)
+                }}
+              >
+                ✓ Ya, Lanjutkan
+              </button>
+              <button 
+                className="confirm-btn-no"
+                onClick={() => setIsConfirmOpen(false)}
+              >
+                ✕ Batal
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </>
   )

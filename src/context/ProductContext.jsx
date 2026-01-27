@@ -46,9 +46,9 @@ export const ProductProvider = ({ children }) => {
         id: 1,
         name: 'Galon Air 19L',
         price: 21000,
-        image: '💧',
+        imageUrl: 'https://via.placeholder.com/200?text=Galon+Air+19L',
         category: 'Air',
-        stock: 50,
+        stock: true,
         description: 'Air galon berkualitas tinggi 19 liter',
         createdAt: new Date().toISOString()
       },
@@ -56,9 +56,9 @@ export const ProductProvider = ({ children }) => {
         id: 2,
         name: 'Galon Air 5L',
         price: 8000,
-        image: '💧',
+        imageUrl: 'https://via.placeholder.com/200?text=Galon+Air+5L',
         category: 'Air',
-        stock: 100,
+        stock: true,
         description: 'Air galon 5 liter untuk kebutuhan sehari-hari',
         createdAt: new Date().toISOString()
       },
@@ -66,9 +66,9 @@ export const ProductProvider = ({ children }) => {
         id: 3,
         name: 'Tabung Gas Elpiji 3kg',
         price: 25000,
-        image: '⛽',
+        imageUrl: 'https://via.placeholder.com/200?text=Tabung+Gas+3kg',
         category: 'Gas',
-        stock: 30,
+        stock: true,
         description: 'Tabung gas elpiji 3 kilogram',
         createdAt: new Date().toISOString()
       }

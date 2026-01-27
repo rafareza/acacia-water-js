@@ -21,8 +21,8 @@
 }
 
 .btn-add-product {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: linear-gradient(135deg, #f0f2f5  0%, #f0f2f5  100%);
+  color: black;
   border: none;
   padding: 0.7rem 1.5rem;
   border-radius: 5px;

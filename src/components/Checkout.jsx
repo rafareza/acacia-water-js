@@ -4,7 +4,7 @@ import { useProduct } from '../context/ProductContext'
 import './Checkout.css'
 
 export default function Checkout({ onClose }) {
-  const { cart, getTotalPrice } = useCart()
+  const { cart, getTotalPrice, clearCart } = useCart()
   const { addOrder } = useProduct()
   const [formData, setFormData] = useState({
     fullName: '',
@@ -75,6 +75,9 @@ export default function Checkout({ onClose }) {
     }
 
     addOrder(orderData)
+
+    // Kosongkan keranjang setelah order berhasil
+    clearCart()
 
     setOrderPlaced(true)
   }

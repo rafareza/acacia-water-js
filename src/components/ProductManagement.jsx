@@ -9,9 +9,9 @@ export default function ProductManagement() {
   const [formData, setFormData] = useState({
     name: '',
     price: '',
-    image: '💧',
+    imageUrl: '',
     category: '',
-    stock: '',
+    stock: true,
     description: ''
   })
   const [searchTerm, setSearchTerm] = useState('')
@@ -35,7 +35,7 @@ export default function ProductManagement() {
   const handleSubmit = (e) => {
     e.preventDefault()
 
-    if (!formData.name || !formData.price || !formData.category || !formData.stock) {
+    if (!formData.name || !formData.price || !formData.category) {
       alert('Mohon isi semua field yang wajib')
       return
     }
@@ -43,9 +43,9 @@ export default function ProductManagement() {
     const productData = {
       name: formData.name,
       price: parseInt(formData.price),
-      image: formData.image,
+      imageUrl: formData.imageUrl,
       category: formData.category,
-      stock: parseInt(formData.stock),
+      stock: formData.stock,
       description: formData.description
     }
 
@@ -65,9 +65,9 @@ export default function ProductManagement() {
     setFormData({
       name: '',
       price: '',
-      image: '💧',
+      imageUrl: '',
       category: '',
-      stock: '',
+      stock: true,
       description: ''
     })
     setIsFormOpen(false)
@@ -79,7 +79,7 @@ export default function ProductManagement() {
     setFormData({
       name: product.name,
       price: product.price,
-      image: product.image,
+      imageUrl: product.imageUrl,
       category: product.category,
       stock: product.stock,
       description: product.description
@@ -137,14 +137,13 @@ export default function ProductManagement() {
 
             <div className="form-row">
               <div className="form-group">
-                <label>Icon/Emoji</label>
+                <label>URL Gambar Produk</label>
                 <input
-                  type="text"
-                  name="image"
-                  value={formData.image}
+                  type="url"
+                  name="imageUrl"
+                  value={formData.imageUrl}
                   onChange={handleInputChange}
-                  maxLength="2"
-                  placeholder="💧"
+                  placeholder="https://example.com/image.jpg"
                 />
               </div>
               <div className="form-group">
@@ -165,15 +164,16 @@ export default function ProductManagement() {
 
             <div className="form-row">
               <div className="form-group">
-                <label>Stok *</label>
-                <input
-                  type="number"
+                <label>Status Stok *</label>
+                <select
                   name="stock"
                   value={formData.stock}
-                  onChange={handleInputChange}
-                  placeholder="Contoh: 50"
+                  onChange={(e) => setFormData(prev => ({ ...prev, stock: e.target.value === 'true' }))}
                   required
-                />
+                >
+                  <option value="true">✓ Tersedia</option>
+                  <option value="false">✕ Tidak Tersedia</option>
+                </select>
               </div>
             </div>
 
@@ -220,11 +220,11 @@ export default function ProductManagement() {
           <table>
             <thead>
               <tr>
-                <th>Icon</th>
+                <th>Gambar</th>
                 <th>Nama Produk</th>
                 <th>Kategori</th>
                 <th>Harga</th>
-                <th>Stok</th>
+                <th>Status Stok</th>
                 <th>Deskripsi</th>
                 <th>Aksi</th>
               </tr>
@@ -232,13 +232,19 @@ export default function ProductManagement() {
             <tbody>
               {filteredProducts.map(product => (
                 <tr key={product.id}>
-                  <td className="icon-cell">{product.image}</td>
+                  <td className="icon-cell">
+                    {product.imageUrl ? (
+                      <img src={product.imageUrl} alt={product.name} style={{ maxWidth: '50px', maxHeight: '50px', borderRadius: '4px' }} />
+                    ) : (
+                      <span>📦</span>
+                    )}
+                  </td>
                   <td className="name-cell">{product.name}</td>
                   <td>{product.category}</td>
                   <td className="price-cell">Rp {product.price.toLocaleString('id-ID')}</td>
                   <td>
-                    <span className={`stock-badge ${product.stock > 20 ? 'in-stock' : 'low-stock'}`}>
-                      {product.stock} unit
+                    <span className={`stock-badge ${product.stock ? 'in-stock' : 'low-stock'}`}>
+                      {product.stock ? '✓ Tersedia' : '✕ Tidak Tersedia'}
                     </span>
                   </td>
                   <td className="description-cell">{product.description}</td>
@@ -267,7 +273,7 @@ export default function ProductManagement() {
 
       <div className="pm-stats">
         <p>Total Produk: <strong>{products.length}</strong></p>
-        <p>Total Stok: <strong>{products.reduce((sum, p) => sum + p.stock, 0)} unit</strong></p>
+        <p>Produk Tersedia: <strong>{products.filter(p => p.stock).length}</strong></p>
       </div>
     </div>
   )
