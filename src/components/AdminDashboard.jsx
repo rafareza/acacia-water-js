@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import { useCart } from '../context/CartContext'
 import { useProduct } from '../context/ProductContext'
 import './AdminDashboard.css'
 import logo from '../assets/acacia.png'
@@ -7,7 +6,6 @@ import ProductManagement from './ProductManagement'
 import OrderManagement from './OrderManagement'
 
 export default function AdminDashboard({ onLogout }) {
-  const { cart } = useCart()
   const { orders } = useProduct()
   const [activeTab, setActiveTab] = useState('overview')
   const [salesData, setSalesData] = useState([])
@@ -19,16 +17,9 @@ export default function AdminDashboard({ onLogout }) {
   })
 
   useEffect(() => {
-    loadSalesData()
-  }, [])
-
-  const loadSalesData = () => {
-    const storedSales = localStorage.getItem('salesData')
-    const sales = storedSales ? JSON.parse(storedSales) : []
-    
-    setSalesData(sales)
-    calculateStats(sales)
-  }
+    setSalesData(orders)
+    calculateStats(orders)
+  }, [orders])
 
   const calculateStats = (sales) => {
     let totalRevenue = 0
@@ -53,6 +44,21 @@ export default function AdminDashboard({ onLogout }) {
     })
   }
 
+  const formatDetailedDateTime = (dateString) => {
+    if (!dateString) return '-'
+    const date = new Date(dateString)
+    const options = {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false
+    }
+    return date.toLocaleString('id-ID', options)
+  }
+
   const handleLogout = () => {
     localStorage.removeItem('adminToken')
     localStorage.removeItem('adminEmail')
@@ -60,10 +66,11 @@ export default function AdminDashboard({ onLogout }) {
   }
 
   const exportToCSV = () => {
-    let csv = 'Tanggal,Nama Pelanggan,Email,Total,Status\n'
+    let csv = 'Tanggal,Nama Pelanggan,No Telepon,Total,Status\n'
     
     salesData.forEach(sale => {
-      csv += `${sale.date},${sale.customerName},${sale.customerEmail},${sale.total},${sale.status}\n`
+      const dateStr = sale.createdAt ? new Date(sale.createdAt).toLocaleDateString('id-ID') : (sale.date || '')
+      csv += `${dateStr},${sale.customerName},${sale.customerEmail},${sale.total},${sale.status}\n`
     })
 
     const element = document.createElement('a')
@@ -176,7 +183,7 @@ export default function AdminDashboard({ onLogout }) {
                       <tr>
                         <th>Tanggal</th>
                         <th>Nama Pelanggan</th>
-                        <th>Email</th>
+                        <th>No Telepon</th>
                         <th>Produk</th>
                         <th>Jumlah</th>
                         <th>Total</th>
@@ -186,7 +193,7 @@ export default function AdminDashboard({ onLogout }) {
                     <tbody>
                       {salesData.map((sale, idx) => (
                         <tr key={idx}>
-                          <td>{sale.date}</td>
+                          <td className="date-cell" title={sale.createdAt}>{formatDetailedDateTime(sale.createdAt || sale.date)}</td>
                           <td>{sale.customerName}</td>
                           <td>{sale.customerEmail}</td>
                           <td>

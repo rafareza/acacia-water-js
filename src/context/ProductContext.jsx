@@ -10,6 +10,8 @@ export const ProductProvider = ({ children }) => {
   useEffect(() => {
     loadProductsFromStorage()
     loadOrdersFromStorage()
+    fetchBackendProducts()
+    fetchBackendOrders()
   }, [])
 
   // Load products dari localStorage
@@ -36,6 +38,34 @@ export const ProductProvider = ({ children }) => {
       } catch (error) {
         console.error('Error loading orders:', error)
       }
+    }
+  }
+
+  const fetchBackendProducts = async () => {
+    try {
+      const res = await fetch('http://localhost:8000/api/products')
+      if (!res.ok) return
+      const body = await res.json()
+      const list = Array.isArray(body) ? body : body.data
+      if (!Array.isArray(list)) return
+      setProducts(list)
+      localStorage.setItem('products', JSON.stringify(list))
+    } catch (e) {
+      console.error('Fetch products failed:', e)
+    }
+  }
+
+  const fetchBackendOrders = async () => {
+    try {
+      const res = await fetch('http://localhost:8000/api/orders')
+      if (!res.ok) return
+      const body = await res.json()
+      const list = Array.isArray(body) ? body : body.data
+      if (!Array.isArray(list)) return
+      setOrders(list)
+      localStorage.setItem('orders', JSON.stringify(list))
+    } catch (e) {
+      console.error('Fetch orders failed:', e)
     }
   }
 
@@ -78,20 +108,54 @@ export const ProductProvider = ({ children }) => {
   }
 
   // Add product
-  const addProduct = (productData) => {
-    const newProduct = {
+  const addProduct = async (productData) => {
+    try {
+      const res = await fetch('http://localhost:8000/api/products', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(productData)
+      })
+      if (res.ok) {
+        const body = await res.json()
+        const created = Array.isArray(body) ? body[0] : body.data
+        const updatedProducts = [...products, created]
+        setProducts(updatedProducts)
+        localStorage.setItem('products', JSON.stringify(updatedProducts))
+        return created
+      }
+    } catch (e) {
+      console.error('Add product failed:', e)
+    }
+    const fallback = {
       id: Date.now(),
       ...productData,
       createdAt: new Date().toISOString()
     }
-    const updatedProducts = [...products, newProduct]
+    const updatedProducts = [...products, fallback]
     setProducts(updatedProducts)
     localStorage.setItem('products', JSON.stringify(updatedProducts))
-    return newProduct
+    return fallback
   }
 
   // Update product
-  const updateProduct = (id, productData) => {
+  const updateProduct = async (id, productData) => {
+    try {
+      const res = await fetch(`http://localhost:8000/api/products/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(productData)
+      })
+      if (res.ok) {
+        const body = await res.json()
+        const updatedServer = Array.isArray(body) ? body[0] : body.data
+        const updatedProducts = products.map(p => p.id === id ? updatedServer : p)
+        setProducts(updatedProducts)
+        localStorage.setItem('products', JSON.stringify(updatedProducts))
+        return
+      }
+    } catch (e) {
+      console.error('Update product failed:', e)
+    }
     const updatedProducts = products.map(p =>
       p.id === id ? { ...p, ...productData, updatedAt: new Date().toISOString() } : p
     )
@@ -100,7 +164,20 @@ export const ProductProvider = ({ children }) => {
   }
 
   // Delete product
-  const deleteProduct = (id) => {
+  const deleteProduct = async (id) => {
+    try {
+      const res = await fetch(`http://localhost:8000/api/products/${id}`, {
+        method: 'DELETE'
+      })
+      if (res.ok) {
+        const updatedProducts = products.filter(p => p.id !== id)
+        setProducts(updatedProducts)
+        localStorage.setItem('products', JSON.stringify(updatedProducts))
+        return
+      }
+    } catch (e) {
+      console.error('Delete product failed:', e)
+    }
     const updatedProducts = products.filter(p => p.id !== id)
     setProducts(updatedProducts)
     localStorage.setItem('products', JSON.stringify(updatedProducts))
@@ -112,20 +189,57 @@ export const ProductProvider = ({ children }) => {
   }
 
   // Add order
-  const addOrder = (orderData) => {
-    const newOrder = {
-      id: 'ORD-' + Date.now(),
+  const addOrder = async (orderData) => {
+    const payload = {
       ...orderData,
       createdAt: new Date().toISOString()
     }
-    const updatedOrders = [...orders, newOrder]
+    try {
+      const res = await fetch('http://localhost:8000/api/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      })
+      if (res.ok) {
+        const body = await res.json()
+        const created = Array.isArray(body) ? body[0] : body.data
+        const updatedOrders = [...orders, created]
+        setOrders(updatedOrders)
+        localStorage.setItem('orders', JSON.stringify(updatedOrders))
+        return created
+      }
+    } catch (e) {
+      console.error('Add order failed:', e)
+    }
+    const fallback = {
+      id: 'ORD-' + Date.now(),
+      ...payload
+    }
+    const updatedOrders = [...orders, fallback]
     setOrders(updatedOrders)
     localStorage.setItem('orders', JSON.stringify(updatedOrders))
-    return newOrder
+    return fallback
   }
 
   // Update order
-  const updateOrder = (id, orderData) => {
+  const updateOrder = async (id, orderData) => {
+    try {
+      const res = await fetch(`http://localhost:8000/api/orders/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(orderData)
+      })
+      if (res.ok) {
+        const body = await res.json()
+        const updatedServer = Array.isArray(body) ? body[0] : body.data
+        const updatedOrders = orders.map(o => o.id === id ? updatedServer : o)
+        setOrders(updatedOrders)
+        localStorage.setItem('orders', JSON.stringify(updatedOrders))
+        return
+      }
+    } catch (e) {
+      console.error('Update order failed:', e)
+    }
     const updatedOrders = orders.map(o =>
       o.id === id ? { ...o, ...orderData, updatedAt: new Date().toISOString() } : o
     )
@@ -134,7 +248,20 @@ export const ProductProvider = ({ children }) => {
   }
 
   // Delete order
-  const deleteOrder = (id) => {
+  const deleteOrder = async (id) => {
+    try {
+      const res = await fetch(`http://localhost:8000/api/orders/${id}`, {
+        method: 'DELETE'
+      })
+      if (res.ok) {
+        const updatedOrders = orders.filter(o => o.id !== id)
+        setOrders(updatedOrders)
+        localStorage.setItem('orders', JSON.stringify(updatedOrders))
+        return
+      }
+    } catch (e) {
+      console.error('Delete order failed:', e)
+    }
     const updatedOrders = orders.filter(o => o.id !== id)
     setOrders(updatedOrders)
     localStorage.setItem('orders', JSON.stringify(updatedOrders))
