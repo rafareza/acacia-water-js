@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react'
+import { createContext, useContext, useState, useEffect, useCallback } from 'react'
 
 const ProductContext = createContext()
 
@@ -6,15 +6,51 @@ export const ProductProvider = ({ children }) => {
   const [products, setProducts] = useState([])
   const [orders, setOrders] = useState([])
 
-  // Load data dari localStorage saat component mount
+  // Load data saat component mount - produk selalu prioritas dari backend (admin)
   useEffect(() => {
-    loadProductsFromStorage()
     loadOrdersFromStorage()
-    fetchBackendProducts()
+    loadProducts()
     fetchBackendOrders()
+
+    // Auto-refresh produk setiap 3 detik untuk realtime sync dengan admin
+    const productRefreshInterval = setInterval(() => {
+      loadProducts()
+    }, 3000)
+
+    // Listen untuk perubahan localStorage dari tab lain (admin update produk)
+    const handleStorageChange = (event) => {
+      if (event.key === 'products') {
+        try {
+          const updatedProducts = JSON.parse(event.newValue)
+          if (Array.isArray(updatedProducts)) {
+            setProducts(updatedProducts)
+          }
+        } catch (error) {
+          console.error('Error parsing updated products:', error)
+        }
+      }
+    }
+
+    window.addEventListener('storage', handleStorageChange)
+
+    return () => {
+      clearInterval(productRefreshInterval)
+      window.removeEventListener('storage', handleStorageChange)
+    }
   }, [])
 
-  // Load products dari localStorage
+  // Load products: prioritas dari backend (ikuti data admin), fallback ke localStorage/default
+  const loadProducts = async () => {
+    const fromBackend = await fetchBackendProducts()
+    if (fromBackend && fromBackend.length > 0) {
+      setProducts(fromBackend)
+      localStorage.setItem('products', JSON.stringify(fromBackend))
+    } else {
+      loadProductsFromStorage()
+    }
+  }
+
+  // Fallback: load products dari localStorage (jika backend tidak tersedia)
   const loadProductsFromStorage = () => {
     const storedProducts = localStorage.getItem('products')
     if (storedProducts) {
@@ -44,16 +80,32 @@ export const ProductProvider = ({ children }) => {
   const fetchBackendProducts = async () => {
     try {
       const res = await fetch('http://localhost:8000/api/products')
-      if (!res.ok) return
+      if (!res.ok) {
+        console.warn('Backend API returned status:', res.status)
+        return null
+      }
       const body = await res.json()
       const list = Array.isArray(body) ? body : body.data
-      if (!Array.isArray(list)) return
-      setProducts(list)
-      localStorage.setItem('products', JSON.stringify(list))
+      if (!Array.isArray(list)) {
+        console.warn('Invalid data format from backend')
+        return null
+      }
+      console.log('Loaded products from backend:', list.length, 'items')
+      return list
     } catch (e) {
-      console.error('Fetch products failed:', e)
+      console.warn('Backend not available, using localStorage/defaults:', e.message)
+      return null
     }
   }
+
+  // Refresh products dari backend - untuk sinkronisasi dengan data admin
+  const refreshProducts = useCallback(async () => {
+    const list = await fetchBackendProducts()
+    if (list && list.length > 0) {
+      setProducts(list)
+      localStorage.setItem('products', JSON.stringify(list))
+    }
+  }, [])
 
   const fetchBackendOrders = async () => {
     try {
@@ -121,10 +173,13 @@ export const ProductProvider = ({ children }) => {
         const updatedProducts = [...products, created]
         setProducts(updatedProducts)
         localStorage.setItem('products', JSON.stringify(updatedProducts))
+        console.log('Product added to backend:', created.id)
         return created
+      } else {
+        console.warn('Failed to add product to backend, status:', res.status)
       }
     } catch (e) {
-      console.error('Add product failed:', e)
+      console.warn('Backend not available, saving to localStorage only:', e.message)
     }
     const fallback = {
       id: Date.now(),
@@ -151,10 +206,13 @@ export const ProductProvider = ({ children }) => {
         const updatedProducts = products.map(p => p.id === id ? updatedServer : p)
         setProducts(updatedProducts)
         localStorage.setItem('products', JSON.stringify(updatedProducts))
+        console.log('Product updated in backend:', id)
         return
+      } else {
+        console.warn('Failed to update product to backend, status:', res.status)
       }
     } catch (e) {
-      console.error('Update product failed:', e)
+      console.warn('Backend not available, updating localStorage only:', e.message)
     }
     const updatedProducts = products.map(p =>
       p.id === id ? { ...p, ...productData, updatedAt: new Date().toISOString() } : p
@@ -173,10 +231,13 @@ export const ProductProvider = ({ children }) => {
         const updatedProducts = products.filter(p => p.id !== id)
         setProducts(updatedProducts)
         localStorage.setItem('products', JSON.stringify(updatedProducts))
+        console.log('Product deleted from backend:', id)
         return
+      } else {
+        console.warn('Failed to delete product from backend, status:', res.status)
       }
     } catch (e) {
-      console.error('Delete product failed:', e)
+      console.warn('Backend not available, deleting from localStorage only:', e.message)
     }
     const updatedProducts = products.filter(p => p.id !== id)
     setProducts(updatedProducts)
@@ -290,7 +351,8 @@ export const ProductProvider = ({ children }) => {
         addOrder,
         updateOrder,
         deleteOrder,
-        getOrdersWithDetails
+        getOrdersWithDetails,
+        refreshProducts
       }}
     >
       {children}

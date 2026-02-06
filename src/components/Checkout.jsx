@@ -222,6 +222,15 @@ export default function Checkout({ onClose }) {
                   <p><strong>Bank:</strong> BCA</p>
                   <p><strong>No Rekening:</strong> 5211687666</p>
                   <p><strong>Atas Nama:</strong> Rafa Rezandrya Jaelani</p>
+                  <p className="payment-instruction">Silakan transfer sesuai total pesanan, kemudian konfirmasi pesanan dan kirim bukti pembayaran melalui WhatsApp admin.</p>
+                  <a 
+                    href="https://wa.me/6285894109114?text=Halo%20Admin%20Acacia%20Water%2C%20saya%20ingin%20mengkonfirmasi%20pesanan%20saya%20dan%20mengirimkan%20bukti%20pembayaran.%0ANama%3A%20" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="wa-confirm-btn"
+                  >
+                    💬 Konfirmasi via WhatsApp Admin
+                  </a>
                 </div>
               </div>
 

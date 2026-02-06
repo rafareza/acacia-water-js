@@ -13,6 +13,21 @@ export default function Footer({ onAdminClick }) {
             Melayani kebutuhan galon air dan tabung gas berkualitas untuk rumah tangga dan bisnis Anda.
           </p>
         </div>
+
+        <div className="footer-contact">
+          <h3>📞 Hubungi Kami</h3>
+          <p className="contact-item">
+            <strong>Admin:</strong> Rafa Rezandrya
+          </p>
+          <a 
+            href="https://wa.me/6285894109114" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="wa-link"
+          >
+            💬 +62 858-9410-9114
+          </a>
+        </div>
       </div>
 
       <div className="footer-bottom">

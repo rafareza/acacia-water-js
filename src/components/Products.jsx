@@ -1,12 +1,21 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useCart } from '../context/CartContext'
 import { useProduct } from '../context/ProductContext'
 import './Products.css'
 
 export default function Products() {
   const { addToCart } = useCart()
-  const { products } = useProduct()
+  const { products, refreshProducts } = useProduct()
   const [selectedFilter, setSelectedFilter] = useState('Semua')
+
+  // Refresh produk dari backend saat user kembali ke tab (sinkron dengan data admin)
+  useEffect(() => {
+    const onVisibilityChange = () => {
+      if (document.visibilityState === 'visible') refreshProducts()
+    }
+    document.addEventListener('visibilitychange', onVisibilityChange)
+    return () => document.removeEventListener('visibilitychange', onVisibilityChange)
+  }, [refreshProducts])
 
   const handleAddToCart = (product) => {
     addToCart(product)

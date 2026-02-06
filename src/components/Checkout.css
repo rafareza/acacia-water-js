@@ -247,6 +247,43 @@
   margin-bottom: 0;
 }
 
+.payment-instruction {
+  margin: 1rem 0 !important;
+  padding: 0.8rem;
+  background: #fff3cd;
+  border-left: 3px solid #ffc107;
+  border-radius: 4px;
+  color: #856404;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.wa-confirm-btn {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 0.8rem 1.5rem;
+  background: #25D366;
+  color: white;
+  text-decoration: none;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  text-align: center;
+  border: none;
+  cursor: pointer;
+}
+
+.wa-confirm-btn:hover {
+  background: #20BA5A;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+}
+
+.wa-confirm-btn:active {
+  transform: translateY(0);
+}
+
 /* Action Buttons */
 .checkout-actions {
   display: flex;
