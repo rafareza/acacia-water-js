@@ -61,13 +61,13 @@ export default function AdminDashboard({ onLogout }) {
 
   const handleLogout = () => {
     localStorage.removeItem('adminToken')
-    localStorage.removeItem('adminEmail')
+    localStorage.removeItem('adminUser')
     onLogout()
   }
 
   const exportToCSV = () => {
     let csv = 'Tanggal,Nama Pelanggan,No Telepon,Total,Status\n'
-    
+
     salesData.forEach(sale => {
       const dateStr = sale.createdAt ? new Date(sale.createdAt).toLocaleDateString('id-ID') : (sale.date || '')
       csv += `${dateStr},${sale.customerName},${sale.customerEmail},${sale.total},${sale.status}\n`

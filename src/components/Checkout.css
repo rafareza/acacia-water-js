@@ -68,7 +68,7 @@
   padding: 1.5rem;
   background: #f9f9f9;
   border-radius: 8px;
-  border-left: 4px solid #667eea;
+  border-left: 4px solid #080C25;
 }
 
 .checkout-section h2 {
@@ -135,7 +135,7 @@
 }
 
 .total-amount {
-  color: #667eea;
+  color: #080C25;
   font-size: 1.1rem;
 }
 
@@ -176,7 +176,7 @@
 .form-group input:focus,
 .form-group textarea:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: #080C25;
   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
@@ -197,12 +197,12 @@
 }
 
 .payment-card:hover {
-  border-color: #667eea;
+  border-color: #080C25;
   box-shadow: 0 4px 12px rgba(102, 126, 234, 0.1);
 }
 
 .payment-card.selected {
-  border-color: #667eea;
+  border-color: #080C25;
   background: #f0f4ff;
 }
 
@@ -315,7 +315,7 @@
 }
 
 .btn-place-order {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #080C25 0%, #080C25 100%);
   color: white;
 }
 
@@ -370,7 +370,7 @@
 }
 
 .close-success-btn {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #080C25 0%, #080C25 100%);
   color: white;
   border: none;
   padding: 1rem 2rem;

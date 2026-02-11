@@ -3,7 +3,7 @@ import './AdminLogin.css'
 import logo from '../assets/acacia.png'
 
 export default function AdminLogin({ onLoginSuccess }) {
-  const [email, setEmail] = useState('')
+  const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
@@ -15,12 +15,12 @@ export default function AdminLogin({ onLoginSuccess }) {
 
     // Simulasi login admin (dalam produksi, ini akan ke backend)
     setTimeout(() => {
-      if (email === 'admin@acaciawater.com' && password === 'admin123') {
+      if (username === 'adminacacia' && password === 'admin123') {
         localStorage.setItem('adminToken', 'token_' + Date.now())
-        localStorage.setItem('adminEmail', email)
+        localStorage.setItem('adminUser', username)
         onLoginSuccess()
       } else {
-        setError('Email atau password salah')
+        setError('Username atau password salah')
       }
       setLoading(false)
     }, 1000)
@@ -36,13 +36,13 @@ export default function AdminLogin({ onLoginSuccess }) {
 
         <form onSubmit={handleLogin} className="login-form">
           <div className="form-group">
-            <label htmlFor="email">Email Admin</label>
+            <label htmlFor="username">Username</label>
             <input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              
+              id="username"
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+
               required
             />
           </div>
@@ -54,7 +54,7 @@ export default function AdminLogin({ onLoginSuccess }) {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              
+
               required
             />
           </div>
@@ -68,7 +68,7 @@ export default function AdminLogin({ onLoginSuccess }) {
 
         <div className="login-info">
           <p>Demo Credentials:</p>
-          <p>Email: admin@acaciawater.com</p>
+          <p>Username: adminacacia</p>
           <p>Password: admin123</p>
         </div>
       </div>
